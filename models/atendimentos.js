@@ -39,7 +39,7 @@ class Atendimentos {
       if (erro) {
         res.status(400).json(erro);
       } else {
-        res.status(201).json(resultados);
+        res.status(201).json({ ...atendimento });
       }
     });
   }
@@ -57,9 +57,9 @@ class Atendimentos {
   }
 
   buscaPorId(id, res) {
-    const sql = `SELECT * FROM Atendimentos WHERE id = ${id}`;
+    const sql = `SELECT * FROM Atendimentos WHERE id = ?`;
 
-    conexao.query(sql, (erro, resultado) => {
+    conexao.query(sql, id, (erro, resultado) => {
       if (erro) {
         res.status(400).json(erro);
       } else {
@@ -74,14 +74,26 @@ class Atendimentos {
         "YYYY-MM-DD HH:mm:ss"
       );
     }
-    
-    const sql = "UPDATE Atendimentos SET ? WHERE id = ?"
+
+    const sql = "UPDATE Atendimentos SET ? WHERE id = ?";
 
     conexao.query(sql, [valores, id], (erro, resultado) => {
-      if(erro) {
+      if (erro) {
         res.status(400).json(resultado);
       } else {
-        res.status(200).json(resultado);
+        res.status(200).json({ ...valores, id });
+      }
+    });
+  }
+
+  deleta(id, res) {
+    const sql = `DELETE FROM Atendimentos WHERE id = ?`;
+
+    conexao.query(sql, id, (erro, resultado) => {
+      if (erro) {
+        res.status(400).json(resultado);
+      } else {
+        res.status(200).json({ id });
       }
     });
   }
